@@ -1,0 +1,39 @@
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21
+    container_name: oracle-db
+    environment:
+      ORACLE_PASSWORD: oracle
+    healthcheck:
+      test: [ "CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/oracle@localhost/XEPDB1 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    ports:
+      - "1521:1521"
+    networks:
+      - spring-oracle-net
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+  api:
+    build: .
+    container_name: laros-api
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XE
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: oracle
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-oracle-net
+volumes:
+  oracle-data:
+
+networks:
+  spring-oracle-net:
+    driver: bridge
