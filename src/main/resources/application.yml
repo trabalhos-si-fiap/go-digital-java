@@ -11,3 +11,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  api:
+    security:
+      token:
+        secret: ${SECRET_JWT:e0c012115f3ab4715aa2b94c4b0be989005b41c3}
+
+BREVO_API_KEY: ${BREVO_KEY}

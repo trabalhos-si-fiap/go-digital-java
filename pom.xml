@@ -11,7 +11,7 @@
 	<groupId>com.laros</groupId>
 	<artifactId>laros</artifactId>
 	<version>0.0.1</version>
-	<name>laroz</name>
+	<name>laros</name>
 	<description>API Back end da Larós</description>
 	<url/>
 	<licenses>
@@ -77,6 +77,17 @@
 			<artifactId>hibernate-community-dialects</artifactId>
 			<version>6.6.16.Final</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>4.4.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -89,6 +100,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.36</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
