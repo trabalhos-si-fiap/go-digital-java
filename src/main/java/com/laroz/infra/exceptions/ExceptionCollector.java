@@ -29,7 +29,7 @@ public class ExceptionCollector {
     public ResponseEntity tratarError404() {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND.value())
-                .body("Cliente não encontrado.");
+                .body("Entidade não encontrada.");
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
