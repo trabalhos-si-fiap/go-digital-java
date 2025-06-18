@@ -6,14 +6,13 @@ import com.laroz.dtos.clients.UpdateClient;
 import com.laroz.models.Client;
 import com.laroz.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,5 +63,26 @@ public class ClientService {
         }
 
         return clientRepository.saveAll(newClients).stream().map(ClientResponse::new).toList();
+    }
+
+    public ByteArrayResource exportAllCsv() throws IOException {
+        List<Client> clients = clientRepository.findAll();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+
+        writer.write("ID,Name,Email,Active,CreatedAt,UpdatedAt\n");
+        for (Client client : clients) {
+            writer.write(String.format("%d,%s,%s,%s,%s,%s,\n",
+                    client.getId(),
+                    client.getName(),
+                    client.getEmail(),
+                    client.isActive(),
+                    client.getCreatedAt().toString(),
+                    client.getUpdatedAt().toString()
+            ));
+        }
+        writer.flush();
+        return new ByteArrayResource(out.toByteArray());
     }
 }
