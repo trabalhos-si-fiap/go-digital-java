@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.laroz.enums.UserRole;
 import com.laroz.infra.exceptions.InvalidOrExpiredTokenException;
+import com.laroz.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +27,7 @@ public class TokenService {
     private String secret;
     private String issuer = "Larós";
 
-    public String generateToken(UserDetails user){
+    public String generateToken(User user){
         Algorithm algorithm = Algorithm.HMAC256(secret);
         String roles = user.getAuthorities()
                 .stream()
@@ -35,6 +36,7 @@ public class TokenService {
         return JWT.create()
                 .withIssuer(issuer)
                 .withClaim("roles", roles)
+                .withClaim("id", user.getId())
                 .withSubject(user.getUsername())
                 .withExpiresAt(expiresAt())
                 .sign(algorithm);
