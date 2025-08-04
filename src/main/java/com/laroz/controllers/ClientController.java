@@ -7,10 +7,13 @@ import com.laroz.services.ClientService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,15 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.create_many(file));
     }
 
+    @GetMapping(value = "/export-all")
+    public ResponseEntity<Resource> exportAll() throws IOException {
+        ByteArrayResource resource = clientService.exportAllCsv();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=all_clients.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
 
     @GetMapping
     public ResponseEntity<Page<ClientResponse>> list(@PageableDefault(size=10, sort = {"id"}) Pageable page) {

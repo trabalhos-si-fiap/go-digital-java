@@ -5,7 +5,9 @@ import com.laroz.dtos.mail.Email;
 import com.laroz.dtos.auth.NewPassword;
 import com.laroz.infra.security.TokenJWT;
 import com.laroz.infra.security.TokenService;
+import com.laroz.repositories.UserRepository;
 import com.laroz.services.PasswordRecoveryService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +32,9 @@ public class AuthController {
     private PasswordRecoveryService passwordRecoveryService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TokenService tokenService;
 
     @PostMapping("/login")
@@ -38,7 +43,13 @@ public class AuthController {
         var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var authentication = authManager.authenticate(authToken);
 
-        var tokenJTW = new TokenJWT(tokenService.generateToken((UserDetails) authentication.getPrincipal()));
+        var tokenJTW = new TokenJWT(
+                tokenService.generateToken(
+                        userRepository.findByEmail(data.email()).orElseThrow(
+                                EntityNotFoundException::new
+                        )
+                )
+        );
 
         return ResponseEntity.ok(tokenJTW);
     }
