@@ -32,8 +32,29 @@ services:
       - "8080:8080"
     networks:
       - spring-oracle-net
+  ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    container_name: ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_volume:/root/.ollama
+    networks:
+      - spring-oracle-net
+    environment:
+      OLLAMA_LLM_LIBRARY: "cuda"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: ["gpu"]
+              count: all
 volumes:
   oracle-data:
+  ollama_volume:
 
 networks:
   spring-oracle-net:

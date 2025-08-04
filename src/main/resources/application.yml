@@ -11,10 +11,24 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  ai:
+    host: "http://ollama:11434"
+    ollama:
+      chat:
+        model: deepseek-r1:8b
+      embedding:
+        model: deepseek-r1:8b
   api:
     security:
       token:
         secret: ${SECRET_JWT:e0c012115f3ab4715aa2b94c4b0be989005b41c3}
+
+  springdoc:
+    version: 0.0.1
+    swagger-ui:
+      display-request-duration: true
+      groups-order: DESC
+      use-root-path: true
+    writer-with-order-by-keys: true
 
 BREVO_API_KEY: ${BREVO_KEY}
