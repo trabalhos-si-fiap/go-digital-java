@@ -10,11 +10,11 @@ public class CorsConfig implements WebMvcConfigurer {
 //    @Value("${IP_PROD}")
 //    private String ipProd;
 
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Permitir para todos os endpoints
-                .allowedOriginPatterns("*")  // Domínio do seu front-end
-//                .allowedOriginPatterns("http://localhost*", ipProd, "http://192.168.0.151:*")  // Domínio do seu front-end
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Métodos permitidos
+                .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*")  // Domínio do seu front-end
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Métodos permitidos
                 .allowedHeaders("*")  // Cabeçalhos permitidos
                 .allowCredentials(true);  // Permitir envio de cookies/autenticação
     }
