@@ -1,5 +1,7 @@
 package com.laroz.models;
 
+import com.laroz.dtos.platform.CreatePlatform;
+import com.laroz.dtos.platform.UpdatePlatform;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,4 +32,18 @@ public class Platform {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Platform(CreatePlatform createPlatafom) {
+        this.name = createPlatafom.name();
+    }
+
+    public void update(UpdatePlatform updatePlatform) {
+        if (updatePlatform.name() != null) {
+            this.name = updatePlatform.name();
+        }
+    }
+
+    public void delete() {
+        this.isActive = false;
+    }
 }
