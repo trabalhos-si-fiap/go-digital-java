@@ -1,5 +1,7 @@
 package com.laroz.models;
 
+import com.laroz.dtos.project.CreateProject;
+import com.laroz.dtos.project.UpdateProject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -61,4 +63,61 @@ public class Project {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Project(
+            User manager,
+            List<Client> clients,
+            List<User> members,
+            CreateProject createProject
+    ) {
+        name = createProject.name();
+        description = createProject.description();
+        startDate = createProject.startDate();
+        endDate = createProject.endDate();
+
+        this.teamMembers = members;
+        this.clients = clients;
+        this.manager = manager;
+    }
+
+    public Project update(
+            UpdateProject updateProject,
+            List<Client> clients,
+            List<User> members,
+            User manager
+    ) {
+        if (updateProject.name() != null) {
+            this.name = updateProject.name();
+        }
+
+        if (updateProject.description() != null) {
+            this.description = updateProject.description();
+        }
+
+        if (updateProject.startDate() != null) {
+            this.startDate = updateProject.startDate();
+        }
+
+        if (updateProject.endDate() != null) {
+            this.endDate = updateProject.endDate();
+        }
+
+        if (clients != null) {
+            this.clients = clients;
+        }
+
+        if (members != null) {
+            this.teamMembers = members;
+        }
+
+        if (manager != null) {
+            this.manager = manager;
+        }
+
+        return this;
+    }
+
+    public void delete() {
+        this.isActive = false;
+    }
 }
