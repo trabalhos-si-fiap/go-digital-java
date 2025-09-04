@@ -1,16 +1,19 @@
 spring:
   application:
     name: laros
+
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+
   ai:
     host: "http://ollama:11434"
     ollama:
@@ -23,12 +26,11 @@ spring:
       token:
         secret: ${SECRET_JWT:e0c012115f3ab4715aa2b94c4b0be989005b41c3}
 
-  springdoc:
-    version: 0.0.1
-    swagger-ui:
-      display-request-duration: true
-      groups-order: DESC
-      use-root-path: true
-    writer-with-order-by-keys: true
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+    livereload:
+      enabled: true
 
 BREVO_API_KEY: ${BREVO_KEY}

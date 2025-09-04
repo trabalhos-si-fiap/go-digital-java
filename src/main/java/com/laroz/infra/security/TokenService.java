@@ -8,7 +8,6 @@ import com.laroz.enums.UserRole;
 import com.laroz.infra.exceptions.InvalidOrExpiredTokenException;
 import com.laroz.models.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 

@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,15 +40,18 @@ public class Client {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    private boolean isActive;
+    @Column(nullable = false)
+    private boolean isActive = true;
+
+
+    @ManyToMany(mappedBy = "clients") // Fazemos o mapeamento bidirecional
+    private List<Project> projects;
 
 
     public Client(CreateClient request) {
         name = request.name();
         email = request.email();
         instagram = request.instagram();
-        isActive = true;
-
     }
 
     public void update(UpdateClient request) {

@@ -1,0 +1,49 @@
+package com.laroz.controllers;
+
+import com.laroz.dtos.tasks.CreateTask;
+import com.laroz.dtos.tasks.TaskResponse;
+import com.laroz.dtos.tasks.UpdateTask;
+import com.laroz.services.TaskService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/tasks")
+public class TaskController {
+    @Autowired
+    private TaskService taskService;
+
+    @PostMapping
+    public ResponseEntity<TaskResponse> create(@RequestBody @Valid CreateTask request, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.create(request, authentication));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<TaskResponse>> list(@PageableDefault(size=10, sort = {"id"}) Pageable page) {
+        return ResponseEntity.ok(taskService.list(page));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateTask request) {
+        return ResponseEntity.ok(taskService.update(id, request));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        taskService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+}

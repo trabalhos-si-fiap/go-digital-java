@@ -29,12 +29,12 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ClientResponse> create(@RequestBody @Valid CreateClient request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.create(request));
     }
 
-    @PostMapping(value="/create/many", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value="/create-many", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<ClientResponse>> create(
             @Parameter(description = "Arquivo CSV contendo nome,email,instagram",
                     content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))

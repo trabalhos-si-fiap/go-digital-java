@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<UserResponse> create(@RequestBody @Valid CreateUser request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(request));
     }

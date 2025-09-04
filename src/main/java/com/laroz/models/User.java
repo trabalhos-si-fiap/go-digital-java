@@ -1,6 +1,7 @@
 package com.laroz.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,7 +45,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private boolean isActive;
+    @Column(nullable = false)
+    private boolean isActive = true;
+
+
+    @ManyToMany(mappedBy = "users")
+    private List<Task> tasks = new ArrayList<>(); // Usuário pode ter várias tarefas
+
+    @OneToMany(mappedBy = "manager") // Relacionamento inverso
+    private List<Project> managedProjects = new ArrayList<>();
 
     @CreatedDate
     @Column(updatable = false)
@@ -57,7 +66,6 @@ public class User implements UserDetails {
         email = data.email();
         password = data.password();
         role = UserRole.CUSTOMER;
-        isActive = true;
     }
 
     public void update(UpdateUser data) {

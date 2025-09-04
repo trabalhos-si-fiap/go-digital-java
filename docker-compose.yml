@@ -13,25 +13,9 @@ services:
     ports:
       - "1521:1521"
     networks:
-      - spring-oracle-net
+      - spring-net
     volumes:
       - oracle-data:/opt/oracle/oradata
-  api:
-    build: .
-    container_name: laros-api
-    depends_on:
-      oracle:
-        condition: service_healthy
-    env_file: "./.env"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XE
-      SPRING_DATASOURCE_USERNAME: system
-      SPRING_DATASOURCE_PASSWORD: oracle
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    ports:
-      - "8080:8080"
-    networks:
-      - spring-oracle-net
   ollama:
     build:
       context: .
@@ -42,7 +26,7 @@ services:
     volumes:
       - ollama_volume:/root/.ollama
     networks:
-      - spring-oracle-net
+      - spring-net
     environment:
       OLLAMA_LLM_LIBRARY: "cuda"
     deploy:
@@ -50,12 +34,40 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              capabilities: ["gpu"]
+              capabilities: [ "gpu" ]
               count: all
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laros-api
+    depends_on:
+      oracle:
+        condition: service_healthy
+    networks:
+      - spring-net
+    volumes:
+      # Montando o código-fonte e o target para refletir alterações no container
+      - ./src:/app/src
+      - ./target:/app/target
+      # Maven local cache
+      - ~/.m2:/root/.m2
+      # Monta o arquivo pom.xml
+      - ./pom.xml:/app/pom.xml
+    env_file: "./.env"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XE
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: oracle
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    command: ["mvn", "spring-boot:run", "-Dspring-boot.run.fork=false"]
+
 volumes:
   oracle-data:
   ollama_volume:
 
 networks:
-  spring-oracle-net:
+  spring-net:
     driver: bridge

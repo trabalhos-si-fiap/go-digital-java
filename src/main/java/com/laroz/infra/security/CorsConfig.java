@@ -14,7 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Permitir para todos os endpoints
                 .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*")  // Domínio do seu front-end
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Métodos permitidos
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Métodos permitidos
                 .allowedHeaders("*")  // Cabeçalhos permitidos
                 .allowCredentials(true);  // Permitir envio de cookies/autenticação
     }
