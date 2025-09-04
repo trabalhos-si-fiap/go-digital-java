@@ -1,5 +1,7 @@
 package com.laroz.models;
 
+import com.laroz.dtos.campaignType.CreateCampaignType;
+import com.laroz.dtos.campaignType.UpdateCampaignType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,4 +22,18 @@ public class CampaignType {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    public CampaignType(CreateCampaignType createCampaignType) {
+        this.name = createCampaignType.name();
+    }
+
+    public void delete() {
+        this.isActive = false;
+    }
+
+    public void update(UpdateCampaignType updateCampaignType) {
+        if (updateCampaignType.name() != null) {
+            this.name = updateCampaignType.name();
+        }
+    }
 }
