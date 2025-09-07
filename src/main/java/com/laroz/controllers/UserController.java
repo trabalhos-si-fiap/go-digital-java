@@ -5,7 +5,10 @@ import com.laroz.dtos.user.UpdateUser;
 import com.laroz.dtos.user.UserResponse;
 import com.laroz.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +28,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> listAll() {
-        return userService.listAll();
+    public ResponseEntity<Page<UserResponse>> list(
+            @PageableDefault(size = 10) Pageable page,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email
+    ) {
+        return ResponseEntity.ok(userService.list(page, name, email));
     }
 
     @GetMapping("/{id}")

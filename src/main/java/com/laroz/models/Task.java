@@ -27,7 +27,6 @@ public class Task {
     private String description;
     private LocalDateTime deadline;
     private boolean dueComplete = false;
-    private Integer position;
 
     @Column(nullable = false)
     private boolean isActive = true;
@@ -45,24 +44,27 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> users;
+    private List<User> members;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-
-
-    public Task(CreateTask data, User createdBy, List<User> members){
+    public Task(
+            CreateTask data,
+            User createdBy,
+            List<User> members,
+            MarketingCampaign campaign
+    ) {
         title = data.title();
         description = data.description();
-        // campaign = data.campaign();
+        this.campaign = campaign;
         comments = new ArrayList<>();
-        users = members;
+        this.members = members;
         this.createdBy = createdBy;
     }
 
-    public void update(UpdateTask request) {
+    public void update(UpdateTask request, List<User> members) {
         if (request.title() != null) {
             this.title = request.title();
         }
@@ -79,8 +81,8 @@ public class Task {
             this.dueComplete = request.dueComplete();
         }
 
-        if (request.position() != null) {
-            this.position = request.position();
+        if (members != null) {
+            this.members = members;
         }
     }
 

@@ -11,6 +11,7 @@ public record TaskResponse(
         String description,
         UserResponse createdBy,
         Boolean isActive,
+        Boolean dueComplete,
         List<UserResponse> teamMembers
         ) {
 
@@ -21,7 +22,8 @@ public record TaskResponse(
                 task.getDescription(),
                 new UserResponse(task.getCreatedBy()),
                 task.isActive(),
-                task.getUsers().stream().map(UserResponse::new).toList()
+                task.isDueComplete(),
+                task.getMembers().stream().map(UserResponse::new).toList()
         );
     }
 }

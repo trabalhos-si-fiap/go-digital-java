@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface CampaignTypeRepository extends JpaRepository<CampaignType, Long> {
     Page<CampaignType> findByIsActiveTrue(Pageable page);
+    Page<CampaignType> findByNameContainingIgnoreCase(Pageable page, String name);
 }

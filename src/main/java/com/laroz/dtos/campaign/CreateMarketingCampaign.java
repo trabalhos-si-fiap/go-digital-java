@@ -3,16 +3,16 @@ package com.laroz.dtos.campaign;
 import com.laroz.enums.CampaignStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CreateMarketingCampaign(
         String name,
         Long projectId,
-        BigDecimal inestment,
-        Long plataformId,
+        BigDecimal investment,
+        Long platformId,
         Long campaignTypeId,
         CampaignStatus campaignStatus,
-        LocalDate startDate,
-        LocalDate endDate
+        LocalDateTime startDate,
+        LocalDateTime endDate
 ) {
 }

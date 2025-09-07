@@ -1,5 +1,6 @@
 package com.laroz.models;
 
+import com.laroz.dtos.campaign.UpdateMarketingCampaign;
 import com.laroz.models.User;
 import com.laroz.dtos.campaign.CreateMarketingCampaign;
 import com.laroz.enums.CampaignStatus;
@@ -39,11 +40,11 @@ public class MarketingCampaign {
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
     private List<Task> taks;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "platform_id")
     private Platform platform; //Meta Ads, Google Ads (PickList)
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "campaign_type")
     private CampaignType campaignType; //Reconhecimento, trafego engajamento, leads, promoção do app, vendas (Picklist)
     @Enumerated(EnumType.STRING)
@@ -52,8 +53,8 @@ public class MarketingCampaign {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
@@ -71,17 +72,53 @@ public class MarketingCampaign {
             Project project,
             Platform platform,
             CampaignType campaignType
-
     ) {
         this.name = createCampaign.name();
         this.createdBy = createdBy;
         this.project = project;
-        this.investment = createCampaign.inestment();
+        this.investment = createCampaign.investment();
         this.platform = platform;
         this.taks = new ArrayList<>();
-        this.type = campaignType;
+        this.campaignType = campaignType;
         this.status = CampaignStatus.PLANING;
         this.startDate = createCampaign.startDate();
         this.endDate = createCampaign.endDate();
+    }
+
+    public void delete() {
+        this.isActive = false;
+    }
+
+    public void update(
+            UpdateMarketingCampaign updateMarketingCampaign,
+            Project project,
+            CampaignType campaignType,
+            Platform platform
+    ) {
+        if (updateMarketingCampaign.name() != null) {
+            this.name = updateMarketingCampaign.name();
+        }
+        if (project != null) {
+            this.project = project;
+        }
+        if (updateMarketingCampaign.investment() != null) {
+            this.investment = updateMarketingCampaign.investment();
+        }
+        if (platform != null) {
+            this.platform = platform;
+        }
+        if (campaignType != null) {
+            this.campaignType = campaignType;
+        }
+        if (updateMarketingCampaign.campaignStatus() != null) {
+            this.status = updateMarketingCampaign.campaignStatus();
+        }
+
+        if (updateMarketingCampaign.startDate() != null) {
+            this.startDate = updateMarketingCampaign.startDate();
+        }
+        if (updateMarketingCampaign.endDate() != null) {
+            this.endDate = updateMarketingCampaign.endDate();
+        }
     }
 }

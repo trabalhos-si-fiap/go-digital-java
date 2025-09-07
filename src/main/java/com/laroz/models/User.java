@@ -25,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "members")
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
@@ -48,8 +48,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean isActive = true;
 
-
-    @ManyToMany(mappedBy = "users")
+    private String phone;
+    @ManyToMany(mappedBy = "members")
     private List<Task> tasks = new ArrayList<>(); // Usuário pode ter várias tarefas
 
     @OneToMany(mappedBy = "manager") // Relacionamento inverso
@@ -66,19 +66,21 @@ public class User implements UserDetails {
         email = data.email();
         password = data.password();
         role = UserRole.CUSTOMER;
+        phone = data.phone();
     }
 
     public void update(UpdateUser data) {
         if (data.name() != null) {
             name = data.name();
         }
-
         if (data.email() != null) {
             name = data.email();
         }
-
         if (data.password() != null) {
             password = data.password();
+        }
+        if (data.phone() != null) {
+            phone = data.phone();
         }
     }
 

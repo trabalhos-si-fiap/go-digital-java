@@ -1,6 +1,7 @@
 package com.laroz.dtos.project;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record CreateProject(
@@ -8,7 +9,7 @@ public record CreateProject(
         List<Long> membersIds,
         String name,
         String description,
-        LocalDate startDate,
-        LocalDate endDate
+        LocalDateTime startDate,
+        LocalDateTime endDate
 ) {
 }

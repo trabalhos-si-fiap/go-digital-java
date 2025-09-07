@@ -9,6 +9,8 @@ public record UpdateClient(
         @Email
         String email,
         @NotBlank
-        String instagram
+        String instagram,
+        @NotBlank
+        String phone
 ) {
 }

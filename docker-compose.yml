@@ -1,9 +1,12 @@
 services:
   oracle:
-    image: gvenzl/oracle-xe:21
+    image: gvenzl/oracle-xe:latest
     container_name: oracle-db
     environment:
-      ORACLE_PASSWORD: oracle
+      ORACLE_DATABASE: laros    # Cria o banco "laros"
+      APP_USER: laros           # Cria o usuário "laros"
+      APP_USER_PASSWORD: laros  # Define a senha do usuário "laros"
+      ORACLE_PASSWORD: laros    # Senha do usuário SYSTEM
     healthcheck:
       test: [ "CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/oracle@localhost/XEPDB1 || exit 1" ]
       interval: 10s
@@ -56,9 +59,9 @@ services:
       - ./pom.xml:/app/pom.xml
     env_file: "./.env"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XE
-      SPRING_DATASOURCE_USERNAME: system
-      SPRING_DATASOURCE_PASSWORD: oracle
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/LAROS # /mesmo nome do banco criado
+      SPRING_DATASOURCE_USERNAME: laros
+      SPRING_DATASOURCE_PASSWORD: laros
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8080:8080"

@@ -1,6 +1,7 @@
 package com.laroz.dtos.project;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record UpdateProject(
@@ -10,7 +11,7 @@ public record UpdateProject(
         Long managerId,
         String name,
         String description,
-        LocalDate startDate,
-        LocalDate endDate
+        LocalDateTime startDate,
+        LocalDateTime endDate
 ) {
 }

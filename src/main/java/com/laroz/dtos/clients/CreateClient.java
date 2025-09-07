@@ -9,6 +9,8 @@ public record CreateClient(
         @Email
         String email,
         @NotBlank
-        String instagram
+        String instagram,
+        @NotBlank
+        String phone
 ) {
 }

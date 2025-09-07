@@ -1,18 +1,14 @@
 package com.laroz.services;
 
-import com.laroz.dtos.campaignType.CreateCampaignType;
-import com.laroz.dtos.campaignType.UpdateCampaignType;
 import com.laroz.dtos.platform.CreatePlatform;
 import com.laroz.dtos.platform.UpdatePlatform;
-import com.laroz.models.CampaignType;
 import com.laroz.models.Platform;
 import com.laroz.repositories.PlatformRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PlatformService {
@@ -28,8 +24,11 @@ public class PlatformService {
         );
     }
 
-    public List<Platform> list(Pageable page) {
-        return platformRepository.findByIsActiveTrue(page).toList();
+    public Page<Platform> list(Pageable page, String name) {
+        if (name != null) {
+            return platformRepository.findByNameContainingIgnoreCase(page, name);
+        }
+        return platformRepository.findByIsActiveTrue(page);
     }
 
 

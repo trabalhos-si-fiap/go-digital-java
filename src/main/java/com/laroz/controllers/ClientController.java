@@ -53,8 +53,22 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ClientResponse>> list(@PageableDefault(size=10, sort = {"id"}) Pageable page) {
-        return ResponseEntity.ok(clientService.list(page));
+    public ResponseEntity<Page<ClientResponse>> list(
+            @PageableDefault(size=10, sort = {"id"}) Pageable page,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String instagram,
+            @RequestParam(required = false) String phone
+    ) {
+        return ResponseEntity.ok(
+                clientService.list(
+                        page,
+                        name,
+                        email,
+                        instagram,
+                        phone
+                )
+        );
     }
 
     @GetMapping("/{id}")

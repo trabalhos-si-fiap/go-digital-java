@@ -7,20 +7,20 @@ import com.laroz.models.MarketingCampaign;
 import com.laroz.models.Platform;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record CampaignResponse(
+public record MarketingCampaignResponse(
         Long id,
         String name,
         ProjectResponse project,
-        BigDecimal inestment,
-        Platform plataform,
+        BigDecimal investment,
+        Platform platform,
         CampaignType campaignType,
         CampaignStatus campaignStatus,
-        LocalDate startDate,
-        LocalDate endDate
+        LocalDateTime startDate,
+        LocalDateTime endDate
 ) {
-    public CampaignResponse(MarketingCampaign mc) {
+    public MarketingCampaignResponse(MarketingCampaign mc) {
         this(
                 mc.getId(),
                 mc.getName(),
@@ -31,6 +31,6 @@ public record CampaignResponse(
                 mc.getStatus(),
                 mc.getStartDate(),
                 mc.getEndDate()
-        )
+        );
     }
 }

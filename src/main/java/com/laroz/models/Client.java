@@ -33,6 +33,8 @@ public class Client {
     @Email
     private String email;
     @NotBlank
+    private String phone;
+    @NotBlank
     private String instagram;
 
     @CreatedDate
@@ -52,6 +54,7 @@ public class Client {
         name = request.name();
         email = request.email();
         instagram = request.instagram();
+        phone = request.phone();
     }
 
     public void update(UpdateClient request) {
@@ -63,6 +66,9 @@ public class Client {
         }
         if (request.instagram() != null) {
             instagram = request.instagram();
+        }
+        if (request.phone() != null) {
+            phone = request.phone();
         }
     }
 

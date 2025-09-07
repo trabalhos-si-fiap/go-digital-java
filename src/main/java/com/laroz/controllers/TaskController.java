@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -26,8 +29,26 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TaskResponse>> list(@PageableDefault(size=10, sort = {"id"}) Pageable page) {
-        return ResponseEntity.ok(taskService.list(page));
+    public ResponseEntity<Page<TaskResponse>> list(
+            @PageableDefault(size=10, sort = {"id"}) Pageable page,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) LocalDateTime deadline,
+            @RequestParam(required = false) Boolean dueComplete,
+            @RequestParam(required = false) Long campaignId,
+            @RequestParam(required = false) List<Long> userIds
+    ) {
+        return ResponseEntity.ok(
+                taskService.list(
+                        page,
+                        title,
+                        description,
+                        deadline,
+                        dueComplete,
+                        campaignId,
+                        userIds
+                )
+        );
     }
 
     @GetMapping("/{id}")

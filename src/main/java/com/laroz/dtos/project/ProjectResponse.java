@@ -5,6 +5,7 @@ import com.laroz.dtos.user.UserResponse;
 import com.laroz.models.Project;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ProjectResponse(
@@ -14,8 +15,8 @@ public record ProjectResponse(
         List<ClientResponse> clients,
         List<UserResponse> teamMembers,
         UserResponse manager,
-        LocalDate startDate,
-        LocalDate endDate,
+        LocalDateTime startDate,
+        LocalDateTime endDate,
         Boolean isActive
 
 

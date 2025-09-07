@@ -9,11 +9,15 @@ import com.laroz.models.User;
 import com.laroz.repositories.ClientRepository;
 import com.laroz.repositories.ProjectRepository;
 import com.laroz.repositories.UserRepository;
+import com.laroz.specifications.ProjectSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +54,45 @@ public class ProjectService {
         );
     }
 
-    public List<ProjectResponse> list(Pageable page) {
-        return projectRepository.findByIsActiveTrue(page).map(ProjectResponse::new).toList();
+    public Page<ProjectResponse> list(
+            Pageable page,
+            String name,
+            String description,
+            List<Long> clientsIds,
+            List<Long> membersIds,
+            Long managerId,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+
+    ) {
+        // Inicializa a Specification com o filtro 'ativo'
+        Specification<Project> spec = Specification.where(ProjectSpecification.isActive());
+
+        // Adiciona condições dinamicamente
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and(ProjectSpecification.hasName(name));
+        }
+        if (description != null && !description.isEmpty()) {
+            spec = spec.and(ProjectSpecification.hasDescription(description));
+        }
+        if (clientsIds != null && !clientsIds.isEmpty()) {
+            spec = spec.and(ProjectSpecification.hasClients(clientsIds));
+        }
+        if (membersIds != null && !membersIds.isEmpty()) {
+            spec = spec.and(ProjectSpecification.hasTeamMembers(membersIds));
+        }
+        if (managerId != null) {
+            spec = spec.and(ProjectSpecification.hasManager(managerId));
+        }
+        if (startDate != null) {
+            spec = spec.and(ProjectSpecification.hasStartDate(startDate));
+        }
+        if (endDate != null) {
+            spec = spec.and(ProjectSpecification.hasEndDate(endDate));
+        }
+
+        // Executa a consulta e retorna a lista paginada
+        return projectRepository.findAll(spec, page).map(ProjectResponse::new);
     }
 
 
@@ -69,8 +110,6 @@ public class ProjectService {
         var project = projectRepository.getReferenceById(
                 updateProject.id()
         );
-
-        // Buscando os dados se foi enviado.
 
         if (updateProject.clientIds() != null) {
             clients = clientRepository.findAllById(

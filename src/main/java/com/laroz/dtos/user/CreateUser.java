@@ -10,6 +10,8 @@ public record CreateUser(
         @Email
         String email,
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s])[A-Za-z\\d[^\\s]]{8,}$")
-        String password
+        String password,
+        @NotBlank
+        String phone
 ) {
 }

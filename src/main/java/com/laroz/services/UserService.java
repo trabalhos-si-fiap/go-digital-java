@@ -5,8 +5,12 @@ import com.laroz.dtos.user.UpdateUser;
 import com.laroz.dtos.user.UserResponse;
 import com.laroz.models.User;
 import com.laroz.repositories.UserRepository;
+import com.laroz.specifications.UserSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +36,18 @@ public class UserService {
         return new ArrayList<>();
     }
 
-    public List<UserResponse> listAll() {
-        return userRepository.findAll().stream()
-                .map(UserResponse::new)
-                .toList();
+    public Page<UserResponse> list(Pageable page, String name, String email) {
+        Specification<User> spec = Specification.where(UserSpecification.isActive());
+
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and(UserSpecification.hasName(name));
+        }
+
+        if (email != null && !email.isEmpty()) {
+            spec = spec.and(UserSpecification.hasEmail(email));
+        }
+
+        return userRepository.findAll(spec, page).map(UserResponse::new);
     }
 
     public UserResponse getById(Long id) {

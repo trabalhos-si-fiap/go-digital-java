@@ -50,11 +50,11 @@ public class PasswordRecoveryService {
     private static EmailMessage getEmailMessage(User user, String token) {
         var emailRequest = new EmailMessage();
 
-        emailRequest.setSender(new EmailMessage.Sender("[Resgate Já] Não responda", "resgate.ja@gmail.com"));
+        emailRequest.setSender(new EmailMessage.Sender("[Larós] Não responda", "resgate.ja@gmail.com"));
         emailRequest.setTo(List.of(new EmailMessage.Recipient("Usuário", user.getEmail())));
-        emailRequest.setSubject("[Resgate Já] Recuperação de senha.");
+        emailRequest.setSubject("[Larós] Recuperação de senha.");
         emailRequest.setHtmlContent("Seu código de recuperação de senha é:\n %s\nEsse código é valido por apenas 5 minutos.".formatted(token));
-        emailRequest.setReplyTo(new EmailMessage.ReplyTo("resgate.ja@gmail.com", "Não responda"));
+        emailRequest.setReplyTo(new EmailMessage.ReplyTo("laros@gmail.com", "Não responda"));
         return emailRequest;
     }
 

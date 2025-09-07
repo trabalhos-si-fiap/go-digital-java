@@ -3,8 +3,10 @@ package com.laroz.services;
 import com.laroz.dtos.campaignType.CreateCampaignType;
 import com.laroz.dtos.campaignType.UpdateCampaignType;
 import com.laroz.models.CampaignType;
+import com.laroz.models.User;
 import com.laroz.repositories.CampaignTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,11 @@ public class CampaignTypeService {
         );
     }
 
-    public List<CampaignType> list(Pageable page) {
-        return campaignTypeRepository.findByIsActiveTrue(page).toList();
+    public Page<CampaignType> list(Pageable page, String name) {
+        if (name != null){
+            return campaignTypeRepository.findByNameContainingIgnoreCase(page, name);
+        }
+        return campaignTypeRepository.findByIsActiveTrue(page);
     }
 
 
