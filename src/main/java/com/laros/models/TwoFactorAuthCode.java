@@ -7,12 +7,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,8 +27,9 @@ public class TwoFactorAuthCode {
     private User user;
     @Column(nullable = false, length = 6)
     private String code;
-    private static final int CODE_EXPIRATION_MINUTES = 5;
-    private LocalDateTime expiresIn = LocalDateTime.now().plusMinutes(CODE_EXPIRATION_MINUTES);
+    private LocalDateTime expiresIn;
+    @Transient
+    private Clock clock = Clock.systemDefaultZone();
 
     @CreatedDate
     @Column(updatable = false)
@@ -37,13 +37,34 @@ public class TwoFactorAuthCode {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    private static final int CODE_EXPIRATION_MINUTES = 5;
+    private static final String CODE_FORMAT = "%06d";
+
     public TwoFactorAuthCode(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        generateCode();
+    }
+
+    public TwoFactorAuthCode(User user, Clock clock) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        if (clock == null) {
+            throw new IllegalArgumentException("Clock cannot be null");
+        }
+
+        this.clock = clock;
         this.user = user;
         generateCode();
     }
 
     private void generateCode() {
-        this.code = String.format("%06d", new SecureRandom().nextInt(100000));
+        this.code = String.format(CODE_FORMAT, new SecureRandom().nextInt(100000));
+        this.expiresIn = LocalDateTime.now(clock).plusMinutes(CODE_EXPIRATION_MINUTES);
     }
 
     public String getCodeFormatted() {
@@ -53,11 +74,11 @@ public class TwoFactorAuthCode {
         return code.substring(0, 3) + "-" + code.substring(3);
     }
 
-    public Boolean isValid() {
-        return LocalDateTime.now().isBefore(expiresIn);
+    public boolean isValid() {
+        return LocalDateTime.now(clock).isBefore(expiresIn);
     }
 
-    public Boolean isInValid() {
+    public boolean isInValid() {
         return !isValid();
     }
 

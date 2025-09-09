@@ -161,6 +161,44 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.13</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<rules>
+						<rule>
+							<element>BUNDLE</element>
+							<limits>
+								<limit>
+									<counter>LINE</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+							</limits>
+						</rule>
+					</rules>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
