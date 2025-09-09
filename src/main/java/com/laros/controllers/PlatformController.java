@@ -2,6 +2,7 @@ package com.laros.controllers;
 
 import com.laros.dtos.platform.CreatePlatform;
 import com.laros.dtos.platform.UpdatePlatform;
+import com.laros.dtos.tasks.TaskResponse;
 import com.laros.models.Platform;
 import com.laros.services.PlatformService;
 import jakarta.validation.Valid;
@@ -24,19 +25,22 @@ public class PlatformController {
     //CRUD
     @PostMapping
     public ResponseEntity<Platform> create(
-            @RequestBody @Valid CreatePlatform createPlatform,
-            Authentication authentication
+            @RequestBody @Valid CreatePlatform createPlatform
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 platformService.create(
-                        createPlatform,
-                        authentication
+                        createPlatform
                 )
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Platform> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(platformService.getById(id));
+    }
+
     @GetMapping
-    ResponseEntity<Page<Platform>> list(
+    public ResponseEntity<Page<Platform>> list(
             @PageableDefault(size = 10, sort = {"id"}) Pageable page,
             @RequestParam(required = false) String name
     ) {
@@ -45,13 +49,13 @@ public class PlatformController {
         );
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     ResponseEntity<Platform> update(
             @RequestBody @Valid UpdatePlatform updatePlatform,
-            Authentication authentication
+            @PathVariable Long id
     ) {
         return ResponseEntity.ok(
-                platformService.update(updatePlatform, authentication)
+                platformService.update(id, updatePlatform)
         );
 
     }

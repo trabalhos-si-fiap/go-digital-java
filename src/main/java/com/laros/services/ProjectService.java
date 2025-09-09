@@ -10,6 +10,7 @@ import com.laros.repositories.ClientRepository;
 import com.laros.repositories.ProjectRepository;
 import com.laros.repositories.UserRepository;
 import com.laros.specifications.ProjectSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,8 +97,7 @@ public class ProjectService {
 
 
     public ProjectResponse update(
-            UpdateProject updateProject,
-            Authentication authentication
+            Long id, UpdateProject updateProject
     ) {
 
         List<User> members = null;
@@ -106,9 +106,9 @@ public class ProjectService {
 
         // Todo: Fazer controle de usuário permitido
 
-        var project = projectRepository.getReferenceById(
-                updateProject.id()
-        );
+        var project = projectRepository.findById(
+                id
+        ).orElseThrow(EntityNotFoundException::new);
 
         if (updateProject.clientIds() != null) {
             clients = clientRepository.findAllById(
@@ -123,9 +123,9 @@ public class ProjectService {
         }
 
         if (updateProject.managerId() != null) {
-            manager = userRepository.getReferenceById(
+            manager = userRepository.findById(
                     updateProject.managerId()
-            );
+            ).orElseThrow(EntityNotFoundException::new);
         }
 
         project.update(updateProject, clients, members, manager);
@@ -140,5 +140,12 @@ public class ProjectService {
         Project project = projectRepository.getReferenceById(id);
         project.delete();
         projectRepository.save(project);
+    }
+
+    public ProjectResponse getById(Long id) {
+        return new ProjectResponse(
+                projectRepository.findById(id)
+                        .orElseThrow(EntityNotFoundException::new)
+        );
     }
 }

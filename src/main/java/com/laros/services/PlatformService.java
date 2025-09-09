@@ -4,6 +4,7 @@ import com.laros.dtos.platform.CreatePlatform;
 import com.laros.dtos.platform.UpdatePlatform;
 import com.laros.models.Platform;
 import com.laros.repositories.PlatformRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +17,7 @@ public class PlatformService {
     private PlatformRepository platformRepository;
 
     public Platform create(
-            CreatePlatform createPlatafom,
-            Authentication authentication
+            CreatePlatform createPlatafom
     ) {
         return platformRepository.save(
                         new Platform(createPlatafom)
@@ -33,11 +33,11 @@ public class PlatformService {
 
 
     public Platform update(
-            UpdatePlatform updatePlatform,
-            Authentication authentication
+            Long id,
+            UpdatePlatform updatePlatform
     ) {
 
-        Platform platform = platformRepository.getReferenceById(updatePlatform.id());
+        Platform platform = platformRepository.getReferenceById(id);
         platform.update(updatePlatform);
 
         return platformRepository.save(platform);
@@ -47,5 +47,9 @@ public class PlatformService {
         Platform platform = platformRepository.getReferenceById(id);
         platform.delete();
         platformRepository.save(platform);
+    }
+
+    public Platform getById(Long id) {
+        return platformRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 }

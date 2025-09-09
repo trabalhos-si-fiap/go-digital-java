@@ -3,6 +3,7 @@ package com.laros.controllers;
 import com.laros.dtos.marketingCampaign.CreateMarketingCampaign;
 import com.laros.dtos.marketingCampaign.MarketingCampaignResponse;
 import com.laros.dtos.marketingCampaign.UpdateMarketingCampaign;
+import com.laros.dtos.tasks.TaskResponse;
 import com.laros.enums.CampaignStatus;
 import com.laros.services.MarketingCampaignService;
 import jakarta.validation.Valid;
@@ -62,13 +63,17 @@ public class MarketingCampaignController {
         );
     }
 
-    @PutMapping
+    @GetMapping("/{id}")
+    public ResponseEntity<MarketingCampaignResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(marketingCampaignService.getById(id));
+    }
+    @PutMapping("/{id}")
     ResponseEntity<MarketingCampaignResponse> update(
             @RequestBody @Valid UpdateMarketingCampaign updateMarketingCampaign,
-            Authentication authentication
+            @PathVariable Long id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                marketingCampaignService.update(updateMarketingCampaign, authentication)
+                marketingCampaignService.update(id, updateMarketingCampaign)
         );
 
     }

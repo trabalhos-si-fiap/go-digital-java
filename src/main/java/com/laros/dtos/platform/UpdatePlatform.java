@@ -1,4 +1,4 @@
 package com.laros.dtos.platform;
 
-public record UpdatePlatform(Long id, String name) {
+public record UpdatePlatform(String name) {
 }

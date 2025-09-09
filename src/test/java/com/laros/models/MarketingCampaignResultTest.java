@@ -20,7 +20,7 @@ class MarketingCampaignResultTest {
 
         mktResult.setCosts(costs);
         mktResult.setInvestment(investment);
-        mktResult.setFinancialResult(result);
+        mktResult.setRevenue(result);
 
         // ROI:: ((20_000 - 10_000 - 2_000) / 10_000) * 100 = 80%
         var expectedRoi = BigDecimal.valueOf(80.00).setScale(2, RoundingMode.HALF_UP);

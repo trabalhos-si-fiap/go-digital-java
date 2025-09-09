@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record UpdateProject(
-        Long id,
         List<Long> clientIds,
         List<Long> membersIds,
         Long managerId,

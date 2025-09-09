@@ -5,7 +5,6 @@ import com.laros.enums.CampaignStatus;
 import java.time.LocalDateTime;
 
 public record UpdateMarketingCampaign(
-        Long id,
         String name,
         Long projectId,
         //BigDecimal investment,

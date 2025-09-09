@@ -7,6 +7,7 @@ import com.laros.enums.CampaignStatus;
 import com.laros.models.*;
 import com.laros.repositories.*;
 import com.laros.specifications.MarketingCampaignSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-@Transactional
 public class MarketingCampaignService {
     @Autowired
     private MarketingCampaignRepository marketingCampaignRepository;
@@ -28,11 +28,12 @@ public class MarketingCampaignService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private PlatformRepository platfomRepository;
+    private PlatformRepository platformRepository;
 
     @Autowired
     private CampaignTypeRepository campaignTypeRepository;
 
+    @Transactional
     public MarketingCampaignResponse create(
             CreateMarketingCampaign createCampaign,
             Authentication authentication
@@ -40,24 +41,26 @@ public class MarketingCampaignService {
 
         User createdBy = (User) authentication.getPrincipal();
 
-        Project project = projectRepository.getReferenceById(
+        Project project = projectRepository.findById(
                 createCampaign.projectId()
-        );
+        ).orElseThrow(EntityNotFoundException::new);
 
-        Platform platform = platfomRepository.getReferenceById(
+        Platform platform = platformRepository.findById(
                 createCampaign.platformId()
-        );
+        ).orElseThrow(EntityNotFoundException::new);
 
-        CampaignType campaignType = campaignTypeRepository.getReferenceById(
+        CampaignType campaignType = campaignTypeRepository.findById(
                 createCampaign.campaignTypeId()
-        );
+        ).orElseThrow(EntityNotFoundException::new);
+
 
         var marketingCampaign = new MarketingCampaign(
                 createCampaign,
                 createdBy,
                 project,
                 platform,
-                campaignType
+                campaignType,
+                new MarketingCampaignResult()
         );
 
         return new MarketingCampaignResponse(
@@ -107,38 +110,35 @@ public class MarketingCampaignService {
         return marketingCampaignRepository.findAll(spec, page).map(MarketingCampaignResponse::new);
     }
 
-
+    @Transactional
     public MarketingCampaignResponse update(
-            UpdateMarketingCampaign updateMarketingCampaign,
-            Authentication authentication
+            Long id, UpdateMarketingCampaign updateMarketingCampaign
     ) {
 
         Project project = null;
         CampaignType campaignType = null;
         Platform platform = null;
 
-        // Todo: Fazer controle de usuário permitido
-
-        var campaign = marketingCampaignRepository.getReferenceById(
-                updateMarketingCampaign.id()
-        );
+        var campaign = marketingCampaignRepository.findById(
+                id
+        ).orElseThrow(EntityNotFoundException::new);
 
         if (updateMarketingCampaign.projectId() != null) {
-            project = projectRepository.getReferenceById(
+            project = projectRepository.findById(
                     updateMarketingCampaign.projectId()
-            );
+            ).orElseThrow(EntityNotFoundException::new);
         }
 
         if (updateMarketingCampaign.campaignTypeId() != null) {
-            campaignType = campaignTypeRepository.getReferenceById(
+            campaignType = campaignTypeRepository.findById(
                     updateMarketingCampaign.campaignTypeId()
-            );
+            ).orElseThrow(EntityNotFoundException::new);
         }
 
         if (updateMarketingCampaign.platformId() != null) {
-            platform = platfomRepository.getReferenceById(
+            platform = platformRepository.findById(
                     updateMarketingCampaign.platformId()
-            );
+            ).orElseThrow(EntityNotFoundException::new);
         }
 
         campaign.update(
@@ -154,9 +154,18 @@ public class MarketingCampaignService {
 
     }
 
+    @Transactional
     public void delete(Long id) {
-        MarketingCampaign campaign = marketingCampaignRepository.getReferenceById(id);
+        MarketingCampaign campaign = marketingCampaignRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         campaign.delete();
         marketingCampaignRepository.save(campaign);
+    }
+
+    public MarketingCampaignResponse getById(Long id) {
+        return new MarketingCampaignResponse(
+                marketingCampaignRepository
+                        .findById(id)
+                        .orElseThrow(EntityNotFoundException::new)
+        );
     }
 }

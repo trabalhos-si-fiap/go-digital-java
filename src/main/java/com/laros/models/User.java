@@ -25,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "members")
+@Table(name = "Users")
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
@@ -38,8 +38,8 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     @Pattern(
-            regexp="^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s])[A-Za-z\\d[^\\s]]{8,}$",
-            message="A Senha deve conter no minimo 8 caracteres, uma letra maiúscula e um caractere especial."
+            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s])[A-Za-z\\d[^\\s]]{8,}$",
+            message = "A Senha deve conter no minimo 8 caracteres, uma letra maiúscula e um caractere especial."
     )
     private String password;
     @Enumerated(EnumType.STRING)
@@ -116,5 +116,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public Boolean isAdmin() {
+        return this.role == UserRole.ADM;
     }
 }

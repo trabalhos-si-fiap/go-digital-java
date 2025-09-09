@@ -32,8 +32,8 @@ public class MarketingCampaign {
     @JoinColumn(name = "project_id") // Definimos o lado dono do relacionamento
     private Project project;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "result_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "result_id", nullable = true)
     private MarketingCampaignResult result;
 
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
@@ -70,7 +70,8 @@ public class MarketingCampaign {
             User createdBy,
             Project project,
             Platform platform,
-            CampaignType campaignType
+            CampaignType campaignType,
+            MarketingCampaignResult result
     ) {
         this.name = createCampaign.name();
         this.createdBy = createdBy;
@@ -79,6 +80,7 @@ public class MarketingCampaign {
         this.taks = new ArrayList<>();
         this.campaignType = campaignType;
         this.status = CampaignStatus.PLANING;
+        this.result = result;
         this.startDate = createCampaign.startDate();
         this.endDate = createCampaign.endDate();
     }

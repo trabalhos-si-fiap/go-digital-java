@@ -4,6 +4,8 @@ import com.laros.dtos.campaignType.CreateCampaignType;
 import com.laros.dtos.campaignType.UpdateCampaignType;
 import com.laros.models.CampaignType;
 import com.laros.repositories.CampaignTypeRepository;
+import com.laros.repositories.MarketingCampaignResultRepository;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +18,7 @@ public class CampaignTypeService {
     private CampaignTypeRepository campaignTypeRepository;
 
     public CampaignType create(
-            CreateCampaignType createCampaignType,
-            Authentication authentication
+            CreateCampaignType createCampaignType
     ) {
         return campaignTypeRepository.save(
                         new CampaignType(createCampaignType)
@@ -33,11 +34,11 @@ public class CampaignTypeService {
 
 
     public CampaignType update(
-            UpdateCampaignType updateCampaignType,
-            Authentication authentication
+            Long id,
+            UpdateCampaignType updateCampaignType
     ) {
 
-        CampaignType campaign = campaignTypeRepository.getReferenceById(updateCampaignType.id());
+        CampaignType campaign = campaignTypeRepository.getReferenceById(id);
         campaign.update(updateCampaignType);
 
         return campaignTypeRepository.save(campaign);
@@ -47,5 +48,9 @@ public class CampaignTypeService {
         CampaignType campaign = campaignTypeRepository.getReferenceById(id);
         campaign.delete();
         campaignTypeRepository.save(campaign);
+    }
+
+    public CampaignType getById(Long id) {
+        return campaignTypeRepository.findById(id).orElseThrow(EntityExistsException::new);
     }
 }

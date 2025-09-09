@@ -3,6 +3,7 @@ package com.laros.controllers;
 import com.laros.dtos.project.CreateProject;
 import com.laros.dtos.project.ProjectResponse;
 import com.laros.dtos.project.UpdateProject;
+import com.laros.dtos.tasks.TaskResponse;
 import com.laros.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,10 @@ public class ProjectController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getById(id));
+    }
     @GetMapping
     ResponseEntity<Page<ProjectResponse>> list(
             @PageableDefault(size = 10, sort = {"id"}) Pageable page,
@@ -62,13 +67,13 @@ public class ProjectController {
         );
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     ResponseEntity<ProjectResponse> update(
-            @RequestBody @Valid UpdateProject updateProject,
-            Authentication authentication
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateProject updateProject
     ) {
         return ResponseEntity.ok(
-                projectService.update(updateProject, authentication)
+                projectService.update(id, updateProject)
         );
 
     }
