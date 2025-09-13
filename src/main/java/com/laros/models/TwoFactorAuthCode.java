@@ -22,6 +22,8 @@ public class TwoFactorAuthCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -44,7 +46,7 @@ public class TwoFactorAuthCode {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
-
+        this.user = user;
         generateCode();
     }
 

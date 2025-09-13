@@ -9,10 +9,10 @@ services:
       ORACLE_PASSWORD: laros    # Senha do usuário SYSTEM
     healthcheck:
       test: [ "CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/oracle@localhost/XEPDB1 || exit 1" ]
-      interval: 10s
-      timeout: 5s
+      interval: 15s
+      timeout: 15s
       retries: 10
-      start_period: 5s
+      start_period: 60s
     ports:
       - "1521:1521"
     networks:

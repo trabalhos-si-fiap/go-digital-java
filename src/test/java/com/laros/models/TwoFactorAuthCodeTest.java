@@ -85,6 +85,12 @@ class TwoFactorAuthCodeTest {
     }
 
     @Test
+    void mustHaveTheUserInstancePassedInTheConstructor() {
+        TwoFactorAuthCode authCode = new TwoFactorAuthCode(mockUser);
+        assertThat(authCode.getUser()).isSameAs(mockUser);
+    }
+
+    @Test
     void shouldBeValidBeforeExpiration() {
         TwoFactorAuthCode authCode = new TwoFactorAuthCode(mockUser);
 
