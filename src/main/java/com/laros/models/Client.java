@@ -19,7 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "clients")
+@Table(name = "clients",
+        uniqueConstraints = {
+        @UniqueConstraint(name = "uk_clients_email", columnNames = "email")
+})
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "id")
 public class Client {
@@ -28,7 +31,6 @@ public class Client {
     private Long id;
     @NotBlank
     private String name;
-    @Column(unique = true)
     @Email
     private String email;
     @NotBlank

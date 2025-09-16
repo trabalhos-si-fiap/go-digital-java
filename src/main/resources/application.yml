@@ -39,6 +39,7 @@ spring:
 
 logging:
   level:
+    com.laros.services.ClientService: DEBUG
     org:
       hibernate:
         SQL: DEBUG

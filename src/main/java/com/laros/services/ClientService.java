@@ -6,6 +6,7 @@ import com.laros.dtos.clients.UpdateClient;
 import com.laros.models.Client;
 import com.laros.repositories.ClientRepository;
 import com.laros.specifications.ClientSpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ClientService {
 
@@ -79,6 +81,18 @@ public class ClientService {
             String[] data = row.split(",");
             if (data.length != 4) continue;
 
+            // Verificar se há cabeçalho e pular
+            if (
+                    data[0].trim().equalsIgnoreCase("nome") ||
+                    data[1].trim().equalsIgnoreCase("email") ||
+                    data[2].trim().equalsIgnoreCase("instagram") ||
+                    data[3].trim().equalsIgnoreCase("telefone")
+            ) {
+                log.debug("Pulando a linha de cabeçalho: {}, {}, {}, {}", data[0], data[1], data[2], data[3]);
+                continue;
+            }
+
+
             newClients.add(
                     new Client(
                             new CreateClient(
@@ -100,12 +114,13 @@ public class ClientService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
-        writer.write("ID,Name,Email,Phone,Active,CreatedAt,UpdatedAt\n");
+        writer.write("ID,Name,Email,Instagram,Phone,Active,CreatedAt,UpdatedAt\n");
         for (Client client : clients) {
-            writer.write(String.format("%d,%s,%s,%s,%s,%s,%s,\n",
+            writer.write(String.format("%d,%s,%s,%s,%s,%s,%s,%s,\n",
                     client.getId(),
                     client.getName(),
                     client.getEmail(),
+                    client.getInstagram(),
                     client.getPhone(),
                     client.isActive(),
                     client.getCreatedAt().toString(),

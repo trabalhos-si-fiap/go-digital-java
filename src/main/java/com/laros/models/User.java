@@ -25,7 +25,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Users")
+@Table(name = "Users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_clients_email", columnNames = "email"),
+        }
+)
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
@@ -35,7 +39,6 @@ public class User implements UserDetails {
     @Size(min = 3, max = 35, message = "O atributo 'name' deve conter no minimo 3 e no máximo 35 caracteres")
     private String name;
     @Email
-    @Column(unique = true)
     private String email;
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s])[A-Za-z\\d[^\\s]]{8,}$",

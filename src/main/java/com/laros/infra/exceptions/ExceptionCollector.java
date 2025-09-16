@@ -2,6 +2,7 @@ package com.laros.infra.exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -89,6 +90,20 @@ public class ExceptionCollector {
     @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
     public ResponseEntity tratarErroAcessoNegado() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+    }
+
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String message = "Violação de integridade: ";
+
+        if (ex.getCause() != null && ex.getCause().getMessage().contains("UK_CLIENTS_EMAIL")) {
+            message += "Já existe um cliente cadastrado com esse e-mail.";
+        }
+
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", message));
     }
 
     @ExceptionHandler(Exception.class)
