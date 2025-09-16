@@ -19,12 +19,10 @@ spring:
     open-in-view: true
 
   ai:
-    host: "http://ollama:11434"
-    ollama:
+    gemini:
+      key: ${GEMINI_API_KEY}
       chat:
-        model: deepseek-r1:8b
-      embedding:
-        model: deepseek-r1:8b
+        model: "gemini-2.5-flash"
   api:
     security:
       token:

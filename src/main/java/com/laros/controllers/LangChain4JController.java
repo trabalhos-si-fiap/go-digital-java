@@ -16,6 +16,6 @@ public class LangChain4JController {
 
     @GetMapping("/ai/basic/langchain4j/generate")
     public Map generate(@RequestParam(value = "message", defaultValue = "Mostre uma frase de alguém famoso") String message) {
-        return Map.of("ollama", chatService.run(message));
+        return Map.of("data", chatService.run(message));
     }
 }
